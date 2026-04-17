@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Slideless">
+<style>@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Space+Mono:wght@400;700&display=swap');</style>
+<title>Anthropic Mythos &amp; AI Security: Signal vs. Noise</title>
+<style>:root{
+  --sl-color-primary:#22d3ee;
+  --sl-color-secondary:#a5b4fc;
+  --sl-color-background:#0a0a0a;
+  --sl-color-text:#fafafa;
+  --sl-color-accent:#22d3ee;
+  --sl-color-muted:#a1a1aa;
+  --sl-color-border:#27272a;
+  --sl-color-code-bg:#18181b;
+  --sl-color-code-fg:#e4e4e7;
+  --sl-color-surface:#18181b;
+  --sl-font-heading:"Space Mono",monospace;
+  --sl-font-body:"IBM Plex Mono",monospace;
+  --sl-font-mono:"Fira Code",monospace;
+  --sl-size-heading-1:1.875rem;
+  --sl-size-heading-2:1.375rem;
+  --sl-size-heading-3:1.125rem;
+  --sl-size-body:0.9375rem;
+  --sl-size-max-width:1024px;
+  --sl-size-slide-padding:1.5rem;
+  --sl-border-radius:2px;
+  --sl-shadow-card:none;
+  --sl-color-controls-bg:rgba(10,10,10,0.95);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:var(--sl-font-body);line-height:1.6;color:var(--sl-color-text);background:var(--sl-color-background)}
+body{overflow-x:hidden}
+
+/* Controls */
+.sl-controls{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.5rem 1rem;background:var(--sl-color-controls-bg);
+  border-bottom:1px solid var(--sl-color-border);font-size:0.875rem;
+}
+.sl-controls button{
+  background:none;border:1px solid var(--sl-color-border);border-radius:var(--sl-border-radius);
+  padding:0.25rem 0.75rem;cursor:pointer;font:inherit;color:inherit;
+}
+.sl-controls button:hover{background:var(--sl-color-surface)}
+.sl-controls button:focus-visible{outline:2px solid var(--sl-color-accent);outline-offset:2px}
+.sl-nav-group{display:flex;align-items:center;gap:0.35rem}
+.sl-controls-spacer{flex:1}
+
+/* Sidebar */
+.sl-sidebar{
+  position:fixed;top:3rem;left:0;bottom:0;width:180px;z-index:90;
+  background:var(--sl-color-controls-bg);border-right:1px solid var(--sl-color-border);
+  overflow-y:auto;padding:0.5rem;
+  transition:transform 0.2s;
+}
+.sl-sidebar-toggle{font-size:0.75rem;min-width:auto;padding:0.25rem 0.5rem}
+body[data-sidebar="hidden"] .sl-sidebar{transform:translateX(-100%)}
+body[data-sidebar="hidden"] .sl-deck{margin-left:0}
+.sl-thumb{
+  display:flex;align-items:flex-start;gap:0.4rem;
+  padding:0.4rem 0.5rem;border-radius:var(--sl-border-radius);
+  cursor:pointer;font-size:0.75rem;line-height:1.3;
+  border:1px solid transparent;margin-bottom:2px;
+  color:var(--sl-color-muted);
+}
+.sl-thumb:hover{background:var(--sl-color-surface)}
+.sl-thumb.sl-thumb-active{
+  border-color:var(--sl-color-accent);
+  background:var(--sl-color-surface);
+  color:var(--sl-color-text);
+}
+.sl-thumb-num{
+  flex-shrink:0;width:1.5em;text-align:right;
+  font-weight:600;color:var(--sl-color-accent);opacity:0.7;
+}
+.sl-thumb-title{
+  overflow:hidden;text-overflow:ellipsis;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+}
+
+/* Deck */
+.sl-deck{padding-top:3rem;margin-left:180px;transition:margin-left 0.2s}
+
+/* Slides mode */
+body[data-mode="slides"] .sl-slide{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:var(--sl-size-slide-padding);display:none;
+}
+body[data-mode="slides"] .sl-slide.sl-active{display:flex}
+
+/* Scroll mode */
+body[data-mode="scroll"] .sl-slide{
+  max-width:var(--sl-size-max-width);margin:0 auto;
+  padding:var(--sl-size-slide-padding);
+  border-bottom:1px solid var(--sl-color-border);
+}
+
+/* Blocks */
+.sl-block{margin:1rem 0;max-width:var(--sl-size-max-width);width:100%}
+.sl-text h1,.sl-text h2,.sl-text h3,.sl-text h4,.sl-text h5,.sl-text h6{font-family:var(--sl-font-heading);margin:0.75em 0 0.25em}
+.sl-text h1{font-size:var(--sl-size-heading-1)}
+.sl-text h2{font-size:var(--sl-size-heading-2)}
+.sl-text h3{font-size:var(--sl-size-heading-3)}
+.sl-text p{margin:0.5em 0}
+.sl-text ul,.sl-text ol{padding-left:1.5em;margin:0.5em 0}
+.sl-text a{color:var(--sl-color-accent);text-decoration:underline}
+.sl-text code{background:var(--sl-color-surface);padding:0.15em 0.3em;border-radius:var(--sl-border-radius);font-family:var(--sl-font-mono);font-size:0.9em}
+.sl-text table{width:100%;border-collapse:collapse;margin:0.75em 0;font-size:0.95em}
+.sl-text th,.sl-text td{border:1px solid var(--sl-color-border);padding:0.5em 0.75em;text-align:left}
+.sl-text thead th{background:var(--sl-color-surface);font-weight:600}
+.sl-text blockquote{border-left:3px solid var(--sl-color-accent);padding:0.5em 1em;margin:0.75em 0;color:var(--sl-color-muted)}
+
+/* Links */
+.sl-link a{color:var(--sl-color-accent);font-weight:600;text-decoration:underline}
+.sl-link p{color:var(--sl-color-muted);margin-top:0.25rem}
+
+/* Images */
+.sl-image figure{text-align:center}
+.sl-image img{max-width:100%;height:auto;border-radius:var(--sl-border-radius)}
+.sl-image figcaption{font-size:0.875rem;color:var(--sl-color-muted);margin-top:0.5rem}
+
+/* Logo row — consecutive images on the first slide display inline at half size */
+.sl-slide:first-child .sl-image{display:inline-block;vertical-align:middle;margin:0.5rem}
+.sl-slide:first-child .sl-image img{max-width:50%;max-height:4rem}
+
+/* Code */
+.sl-code{position:relative}
+.sl-code pre{
+  background:var(--sl-color-code-bg);color:var(--sl-color-code-fg);
+  padding:1rem;border-radius:var(--sl-border-radius);overflow-x:auto;
+  font-family:var(--sl-font-mono);font-size:0.875rem;line-height:1.5;
+}
+.sl-code code{font-family:inherit;background:none;padding:0}
+.sl-line-number{display:inline-block;width:2.5em;text-align:right;margin-right:1em;opacity:0.5;user-select:none}
+.sl-copy-btn{
+  position:absolute;top:0.5rem;right:0.5rem;
+  background:rgba(255,255,255,0.15);color:var(--sl-color-code-fg);
+  border:none;border-radius:var(--sl-border-radius);padding:0.2rem 0.5rem;
+  cursor:pointer;font-size:0.75rem;
+}
+
+/* Charts & diagrams */
+.sl-chart pre{background:var(--sl-color-surface);padding:1rem;border-radius:var(--sl-border-radius);overflow-x:auto;font-family:var(--sl-font-mono);font-size:0.8rem}
+.sl-diagram-placeholder{background:var(--sl-color-surface);border:2px dashed var(--sl-color-accent);border-radius:var(--sl-border-radius);padding:2rem;text-align:center;color:var(--sl-color-accent)}
+.sl-diagram-img{max-width:100%;height:auto}
+
+/* Focus */
+:focus-visible{outline:2px solid var(--sl-color-accent);outline-offset:2px}
+
+/* Print */
+@media print{
+  .sl-controls,.sl-sidebar{display:none}
+  .sl-deck{margin-left:0}
+  body[data-mode="slides"] .sl-slide{display:flex!important;page-break-after:always;min-height:auto}
+}</style>
+</head>
+<body data-mode="slides" data-total-slides="10" data-sidebar="visible">
+<nav class="sl-controls">
+<button class="sl-sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+<div class="sl-nav-group">
+<button class="sl-prev" aria-label="Previous slide">◀ Prev</button>
+<span class="sl-slide-counter" aria-live="polite">Slide <span class="sl-current">1</span> / 10</span>
+<button class="sl-next" aria-label="Next slide">Next ▶</button>
+</div>
+<span class="sl-controls-spacer"></span>
+<button class="sl-mode-toggle" aria-label="Toggle view mode">Scroll view</button>
+</nav>
+<aside class="sl-sidebar">
+<div class="sl-thumb" data-thumb-index="0"><span class="sl-thumb-num">1</span><span class="sl-thumb-title">Anthropic Mythos &amp; AI Security: Signal vs. Noise</span></div>
+<div class="sl-thumb" data-thumb-index="1"><span class="sl-thumb-num">2</span><span class="sl-thumb-title">What Is Claude Mythos?</span></div>
+<div class="sl-thumb" data-thumb-index="2"><span class="sl-thumb-num">3</span><span class="sl-thumb-title">What Is Project Glasswing?</span></div>
+<div class="sl-thumb" data-thumb-index="3"><span class="sl-thumb-num">4</span><span class="sl-thumb-title">What Anthropic Claims Mythos Can Do</span></div>
+<div class="sl-thumb" data-thumb-index="4"><span class="sl-thumb-num">5</span><span class="sl-thumb-title">What&#39;s Been Independently Verified</span></div>
+<div class="sl-thumb" data-thumb-index="5"><span class="sl-thumb-num">6</span><span class="sl-thumb-title">What&#39;s Marketing</span></div>
+<div class="sl-thumb" data-thumb-index="6"><span class="sl-thumb-num">7</span><span class="sl-thumb-title">The Verdict: What&#39;s Real, What&#39;s Noise</span></div>
+<div class="sl-thumb" data-thumb-index="7"><span class="sl-thumb-num">8</span><span class="sl-thumb-title">What This Means for Corporations</span></div>
+<div class="sl-thumb" data-thumb-index="8"><span class="sl-thumb-num">9</span><span class="sl-thumb-title">What This Means for Security Consultants</span></div>
+<div class="sl-thumb" data-thumb-index="9"><span class="sl-thumb-num">10</span><span class="sl-thumb-title">Recommendations</span></div>
+</aside>
+<main class="sl-deck">
+<article class="sl-slide" data-slide-index="0" id="slide-0" aria-label="Anthropic Mythos &amp; AI Security: Signal vs. Noise">
+<div class="sl-block sl-text"><h1>Anthropic Mythos &amp; AI Security</h1>
+<h2>Signal vs. Noise</h2>
+<p><strong>An internal assessment for ISD/EAG Security — April 2026</strong></p>
+<p>Gauthier Lawny, Senior Cybersecurity Consultant</p>
+<p>ISD/EAG Security, Microsoft</p></div>
+</article>
+<article class="sl-slide" data-slide-index="1" id="slide-1" aria-label="What Is Claude Mythos?">
+<div class="sl-block sl-text"><h2>What Is Claude Mythos?</h2></div>
+<div class="sl-block sl-text"><p>Claude Mythos Preview is an <strong>unreleased</strong> general-purpose AI model built by Anthropic. It is not a cybersecurity product — its security capabilities <strong>emerged</strong> from general improvements in code understanding, reasoning, and autonomous multi-step task execution.</p>
+<p>Anthopic describes it as capable of <em>&#39;surpassing all but the most skilled humans at finding and exploiting software vulnerabilities.&#39;</em></p>
+<p><strong>Key facts:</strong></p>
+<ul>
+<li>Not publicly available — restricted to vetted partners and security researchers</li>
+<li>Not trained specifically for cybersecurity — capabilities are a side effect of scale</li>
+<li>Announced April 7, 2026 alongside Project Glasswing</li>
+<li>Name comes from Ancient Greek <em>mythos</em> (&#39;narrative&#39;) — the stories civilizations used to make sense of the world</li>
+</ul>
+<p>Anthopic chose not to release it broadly, citing the risk of misuse. Whether that caution is genuine, strategic, or both is a central question of this briefing.</p></div>
+</article>
+<article class="sl-slide" data-slide-index="2" id="slide-2" aria-label="What Is Project Glasswing?">
+<div class="sl-block sl-text"><h2>What Is Project Glasswing?</h2></div>
+<div class="sl-block sl-text"><p>Project Glasswing is Anthropic&#39;s initiative to channel Mythos&#39;s capabilities toward <strong>defense</strong> rather than offense. Announced simultaneously with the model, it provides gated access to Mythos for security work.</p>
+<p><strong>The deal:</strong></p>
+<ul>
+<li><strong>$100M</strong> in Mythos API usage credits (not cash grants — this drives API adoption)</li>
+<li><strong>$4M</strong> in direct donations to open-source security (OpenSSF, Apache Foundation)</li>
+<li><strong>12 founding partners</strong>: AWS, Apple, Broadcom, Cisco, CrowdStrike, Google, JPMorganChase, Linux Foundation, <strong>Microsoft</strong>, NVIDIA, Palo Alto Networks</li>
+<li><strong>40+ additional organizations</strong> that maintain critical software infrastructure</li>
+<li><strong>90-day public report</strong> commitment on vulnerabilities found and lessons learned</li>
+</ul>
+<p><strong>How you get access:</strong></p>
+<ul>
+<li>Glasswing partners get Mythos Preview directly</li>
+<li>Everyone else: Opus 4.7 (public, with cyber safeguards) + a <strong>Cyber Verification Program</strong> for legitimate security researchers who need the guardrails lowered</li>
+<li>Pricing: $25/$125 per million input/output tokens</li>
+</ul>
+<p>Microsoft&#39;s role: MSRC evaluated Mythos on the CTI-REALM benchmark, reporting &#39;substantial improvements.&#39; Available as a gated research preview on Microsoft Foundry.</p></div>
+</article>
+<article class="sl-slide" data-slide-index="3" id="slide-3" aria-label="What Anthropic Claims Mythos Can Do">
+<div class="sl-block sl-text"><h2>What Anthropic Claims Mythos Can Do</h2></div>
+<div class="sl-block sl-text"><p>These claims come from Anthropic&#39;s own Frontier Red Team. They are detailed and technically specific — but they are <strong>self-reported by the model&#39;s creator</strong>.</p>
+<p><strong>Flagship vulnerabilities discovered:</strong></p>
+<table><thead><tr>
+<th>Target</th>
+<th>What Mythos Found</th>
+<th>Notable Detail</th>
+</tr></thead><tbody>
+<tr>
+<td>OpenBSD (27 yrs old)</td>
+<td>Remote crash via TCP signed-integer overflow</td>
+<td>Cost: &lt;$50 per scan run</td>
+</tr>
+<tr>
+<td>FFmpeg (16 yrs old)</td>
+<td>Out-of-bounds write in H.264 decoder</td>
+<td>Fuzzers hit the same line 5M times without catching it</td>
+</tr>
+<tr>
+<td>FreeBSD (17 yrs old)</td>
+<td>Unauthenticated root RCE via NFS</td>
+<td>20-gadget ROP chain across 6 RPC requests</td>
+</tr>
+<tr>
+<td>Linux kernel</td>
+<td>Nearly a dozen privilege-escalation chains</td>
+<td>Chains 2-4 vulnerabilities, &lt;$1-2K each</td>
+</tr>
+<tr>
+<td>Browser engine</td>
+<td>Full sandbox escape</td>
+<td>4-vulnerability chain with JIT heap spray</td>
+</tr>
+</tbody></table>
+<p><strong>The headline number:</strong> On Firefox, Mythos produced <strong>181 working exploits</strong> vs. 2 from the previous model — a claimed <strong>90× improvement</strong>. The jump isn&#39;t in finding bugs (the previous model already found 22 CVEs in two weeks). The jump is in <strong>weaponizing</strong> them into working exploits.</p>
+<p><strong>N-day automation:</strong> Given a CVE ID and a git commit, Mythos can write a working exploit <strong>fully autonomously</strong> — no human in the loop.</p></div>
+</article>
+<article class="sl-slide" data-slide-index="4" id="slide-4" aria-label="What&#39;s Been Independently Verified">
+<div class="sl-block sl-text"><h2>What&#39;s Been Independently Verified</h2></div>
+<div class="sl-block sl-text"><p><strong>The UK AI Safety Institute (AISI)</strong> — a government body that tests frontier AI models before release — ran its own evaluations. AISI is not an Anthropic partner; it has a mandate from the UK government to assess AI risks independently.</p>
+<ul>
+<li><strong>73% success</strong> on expert-level CTF challenges that no model could solve before April 2025</li>
+<li><strong>First model to complete</strong> a 32-step simulated corporate network attack end-to-end (3 out of 10 attempts)</li>
+<li>Performance was <strong>still improving</strong> at their maximum 100M-token budget — it hadn&#39;t plateaued</li>
+<li><strong>Critical caveat from AISI themselves</strong>: <em>&#39;We cannot say whether Mythos would succeed against well-defended systems&#39;</em> — their tests had no active defenders and no alert penalties</li>
+</ul></div>
+<div class="sl-block sl-text"><p><strong>What independent practitioners are seeing</strong> — people with no financial stake in Anthropic:</p>
+<ul>
+<li><strong>Greg Kroah-Hartman</strong> (maintainer of the Linux kernel stable branch, one of the most senior open-source developers in the world): <em>&#39;Something happened a month ago and the world switched. Now we have real reports. They are good and they are real.&#39;</em></li>
+<li><strong>Daniel Stenberg</strong> (creator and sole maintainer of curl, used by virtually every internet-connected device): <em>&#39;Less slop but lots of reports. Many of them really good. I am spending hours per day on this now.&#39;</em></li>
+<li><strong>Simon Willison</strong> (respected independent tech blogger and Django co-creator): Independently verified the OpenBSD SACK bug via git blame — the vulnerable code was 27 years old. His take: <em>&#39;Saying our model is too dangerous to release is a great way to build buzz, but in this case I expect their caution is warranted.&#39;</em></li>
+</ul></div>
+<div class="sl-block sl-text"><p><strong>The trajectory is the most credible data point</strong> — confirmed by AISI (independent) and the UK National Cyber Security Centre (NCSC, government):</p>
+<table><thead><tr>
+<th>Period</th>
+<th>What Happened</th>
+</tr></thead><tbody>
+<tr>
+<td>Mid-2024</td>
+<td>Best AI completed &lt;2 steps of a 32-step attack</td>
+</tr>
+<tr>
+<td>Feb 2026</td>
+<td>Opus 4.6 averaged 15.6 steps — <strong>6× improvement in 18 months</strong></td>
+</tr>
+<tr>
+<td>Apr 2026</td>
+<td>Mythos averaged 22 steps, completing the full chain 3/10 times</td>
+</tr>
+</tbody></table>
+<p>NCSC conclusion: <em>&#39;These limitations are not permanent barriers.&#39;</em></p></div>
+</article>
+<article class="sl-slide" data-slide-index="5" id="slide-5" aria-label="What&#39;s Marketing">
+<div class="sl-block sl-text"><h2>What&#39;s Marketing</h2></div>
+<div class="sl-block sl-text"><p><strong>Bruce Schneier</strong> — Harvard Kennedy School fellow, author of <em>Applied Cryptography</em> and <em>Schneier on Security</em>, widely regarded as one of the most influential voices in information security for three decades — calls it <em>&#39;mostly marketing hype&#39;</em>:</p>
+<blockquote><p><em>&#39;They&#39;re convincing a lot of people that Mythos is this amazing step change in capability when the evidence right now… is that it might not be.&#39;</em></p></blockquote>
+<p>His argument: every vendor overstates the threats their product solves. &#39;Too dangerous to release&#39; creates mystique and drives demand. The real test is whether anyone else can replicate the results independently.</p></div>
+<div class="sl-block sl-text"><p><strong>AISLE</strong> — an AI security startup and direct Anthropic competitor (so they have an incentive to show alternatives work) — ran Mythos&#39;s flagship findings against 8 different models:</p>
+<ul>
+<li><strong>8 out of 8 models</strong> detected the FreeBSD RCE, including a tiny 3.6-billion-parameter model costing $0.11 per million tokens</li>
+<li>Rankings reshuffled completely across different tasks — there is no stable &#39;best model for cybersecurity&#39;</li>
+<li>Their thesis: <em>&#39;The strongest version of the narrative — that this depends on a restricted frontier model — looks overstated.&#39;</em> The moat is the system (scaffolding, orchestration, pipelines), not any single model</li>
+</ul>
+<p><strong>Caveat</strong>: AISLE&#39;s tests gave models the vulnerable function with hints — an upper bound, not an autonomous scan. They concede Mythos&#39;s multi-round exploit chaining is genuinely unique.</p></div>
+<div class="sl-block sl-text"><p><strong>The &#39;too dangerous to release&#39; playbook:</strong></p>
+<table><thead><tr>
+<th>Lab</th>
+<th>Model</th>
+<th>Year</th>
+<th>What Happened Next</th>
+</tr></thead><tbody>
+<tr>
+<td>OpenAI</td>
+<td>GPT-2</td>
+<td>2019</td>
+<td>Released fully 8 months later</td>
+</tr>
+<tr>
+<td>OpenAI</td>
+<td>GPT-4</td>
+<td>2023</td>
+<td>Red team report on &#39;power-seeking&#39; → released with mitigations</td>
+</tr>
+<tr>
+<td>Meta</td>
+<td>LLaMA</td>
+<td>2023</td>
+<td>&#39;Gated release&#39; → leaked within a week</td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td>Mythos</td>
+<td>2026</td>
+<td><em>We are here</em></td>
+</tr>
+</tbody></table>
+<p><strong>The pattern</strong>: Announce danger → demonstrate responsibility → release or get overtaken → capabilities democratize anyway.</p>
+<p><strong>Follow the money</strong>: Anthropic is pre-IPO. &#39;Too dangerous to release&#39; is the ultimate credibility signal for investors. $100M in API credits (not cash) drives platform adoption. Every Glasswing partner&#39;s stock rallied after the announcement. The 90× number, the $100M figure, and the 12-partner coalition are all optimized for headlines.</p></div>
+</article>
+<article class="sl-slide" data-slide-index="6" id="slide-6" aria-label="The Verdict: What&#39;s Real, What&#39;s Noise">
+<div class="sl-block sl-text"><h2>The Verdict: What&#39;s Real, What&#39;s Noise</h2></div>
+<div class="sl-block sl-text"><p><strong>What survives scrutiny:</strong></p>
+<p>✅ The <strong>capability trajectory</strong> is real — 6× improvement in 18 months, confirmed by an independent government body (AISI)</p>
+<p>✅ <strong>Exploit construction at scale</strong> is new — chaining 2-4 vulnerabilities autonomously, grinding through tedious exploit steps without fatigue</p>
+<p>✅ The <strong>cost floor has collapsed</strong> — £65 per attack attempt (AISI), &lt;$1,000 for a kernel privilege escalation</p>
+<p>✅ <strong>Non-experts can leverage it</strong> — Anthropic staff with no security background got working remote code execution exploits overnight</p>
+<p>✅ Real practitioners (<strong>Kroah-Hartman, Stenberg</strong>) independently confirm a step change in AI-generated vulnerability reports</p></div>
+<div class="sl-block sl-text"><p><strong>What doesn&#39;t hold up:</strong></p>
+<p>❌ <strong>&#39;Uniquely dangerous&#39;</strong> is overstated — 8 out of 8 models (including tiny ones) detected the flagship vulnerabilities</p>
+<p>❌ The <strong>90× Firefox number</strong> has zero independent replication — it&#39;s a self-benchmark by the model&#39;s creator</p>
+<p>❌ <strong>&#39;Thousands of zero-days&#39;</strong> — over 99% are undisclosed, making the claim unfalsifiable</p>
+<p>❌ <strong>No testing against active defenders</strong> — AISI explicitly says they don&#39;t know if it works against a real SOC</p>
+<p>❌ Every source has a <strong>commercial angle</strong> — Anthropic (IPO), partners (stock rally), even AISLE (competitor selling alternatives)</p></div>
+<div class="sl-block sl-text"><p><strong>Bottom line</strong>: The capability is real. The trajectory is accelerating. But <em>&#39;only Mythos can do this&#39;</em> is the marketing — this is the direction of the entire field, not one model. Prepare for the trajectory, not the brand name.</p></div>
+</article>
+<article class="sl-slide" data-slide-index="7" id="slide-7" aria-label="What This Means for Corporations">
+<div class="sl-block sl-text"><h2>What This Means for Corporations</h2></div>
+<div class="sl-block sl-text"><h3>The patch window is closing</h3>
+<p>When an AI can take a CVE identifier and a git commit and produce a working exploit <strong>fully autonomously for under $2,000</strong>, every unpatched vulnerability becomes a race against automation. Palo Alto Networks&#39; Unit 42 already observes the fastest AI-assisted attacks going from initial access to data exfiltration in <strong>25 minutes</strong> — most enterprises take <strong>days</strong> to detect an intrusion.</p>
+<p><strong>90-day patch cycles are built for human-speed adversaries. That era is ending.</strong></p></div>
+<div class="sl-block sl-text"><h3>Mid-tier threat actors just got an upgrade</h3>
+<p>The skill gap is compressing. Anthropic reports that staff members with no security background received working remote code execution exploits overnight. If the capability trajectory holds, within 12-18 months mid-tier threat actors — financially motivated groups, hacktivists, disgruntled insiders — will have access to exploit capabilities that previously required nation-state resources.</p>
+<p>As Palo Alto&#39;s CTO put it: <em>&#39;A single bad actor can now run campaigns that once required entire teams. The models do not pause for sleep, they scale, and they only have to be right once.&#39;</em></p></div>
+<div class="sl-block sl-text"><h3>Defender advantage is real — but conditional</h3>
+<p>The UK <strong>National Cyber Security Centre</strong> (the UK&#39;s government authority for cybersecurity, equivalent to CISA) has a nuanced position: defenders <strong>can</strong> shape the battlefield because AI-generated attacks currently trigger detectable alerts. But this advantage is <strong>not guaranteed</strong> — it only works where monitoring exists and foundations are strong.</p>
+<p><strong>Their key insight</strong>: AI amplifies both strengths and weaknesses. Organizations with strong security baselines will benefit from AI-powered defense. Organizations with weak foundations will face amplified exposure.</p>
+<p><strong>The strategic question for every CISO</strong>: Are you in a position where AI helps you, or where AI helps your attacker more?</p></div>
+</article>
+<article class="sl-slide" data-slide-index="8" id="slide-8" aria-label="What This Means for Security Consultants">
+<div class="sl-block sl-text"><h2>What This Means for Security Consultants</h2></div>
+<div class="sl-block sl-text"><h3>Vulnerability assessment is commoditizing</h3>
+<p>When a model can find a Firefox UAF in 20 minutes and a kernel privilege escalation in half a day for under $1,000, the value of <strong>manual vulnerability scanning and penetration testing</strong> shifts fundamentally. The volume of AI-generated findings will overwhelm traditional triage — Daniel Stenberg is already spending hours per day processing AI-submitted reports to curl.</p>
+<p><strong>What this means for our engagements:</strong></p>
+<ul>
+<li>Routine vuln scanning becomes a commodity — clients will expect AI-assisted coverage as the baseline</li>
+<li>Manual pentest value moves <strong>up the stack</strong>: architecture review, threat modeling, detection engineering, incident response design</li>
+<li>Our ability to <strong>interpret, prioritize, and contextualize</strong> AI findings becomes the differentiator, not the finding itself</li>
+</ul></div>
+<div class="sl-block sl-text"><h3>Client advisory needs to evolve</h3>
+<p>Clients will ask about Mythos specifically. The right framing:</p>
+<ol>
+<li><strong>Don&#39;t dismiss</strong> — the trajectory is independently validated and accelerating</li>
+<li><strong>Don&#39;t panic</strong> — no model has been tested against active defenders; real-world impact in defended environments is unproven</li>
+<li><strong>Don&#39;t fixate on the brand</strong> — this is a field-wide trend, not one model; prepare for the capability class, not the product name</li>
+<li><strong>Focus on what they control</strong> — patching cadence, attack surface management, monitoring coverage, detection engineering</li>
+</ol></div>
+<div class="sl-block sl-text"><h3>A note on our position</h3>
+<p>Microsoft is a Glasswing founding partner and an Anthropic investor. MSRC has evaluated Mythos and reports &#39;substantial improvements.&#39; We have a seat at the table — and a commercial interest in the narrative being true.</p>
+<p><strong>Be transparent about this with clients.</strong> Our credibility as consultants depends on honest, source-aware assessment — not on amplifying a partner&#39;s marketing. When we recommend AI-assisted tools, recommend the capability class (frontier models for code review and vuln discovery), not a specific vendor.</p></div>
+</article>
+<article class="sl-slide" data-slide-index="9" id="slide-9" aria-label="Recommendations">
+<div class="sl-block sl-text"><h2>Recommendations</h2></div>
+<div class="sl-block sl-text"><h3>Now (0-3 months)</h3>
+<ol>
+<li><strong>Apply for Cyber Verification Program access</strong> to Opus 4.7 — start building hands-on experience with frontier-model security capabilities</li>
+<li><strong>Pilot AI-assisted vulnerability discovery</strong> on internal or willing-client engagements using currently available models — the capability is real and model-agnostic</li>
+<li><strong>Update client advisory templates</strong> — incorporate AI-accelerated threat language; use NCSC framing (trajectory + defender advantage conditional on strong baselines)</li>
+<li><strong>Review patch-cycle guidance</strong> — advise clients to compress SLAs for critical infrastructure; 90-day windows are increasingly untenable</li>
+<li><strong>Brief all consultants</strong> on what Mythos-class models can and can&#39;t do — this deck is step one</li>
+</ol></div>
+<div class="sl-block sl-text"><h3>Watch (6-12 months)</h3>
+<ul>
+<li><strong>Glasswing 90-day report</strong> (~July 2026) — the first real accountability check on partner outcomes</li>
+<li><strong>AISI next-generation evaluations</strong> — tests with active defenders and hardened environments will be the real signal</li>
+<li><strong>Open-weight models catching up</strong> — when Mythos-class capabilities appear in freely available models, the gated-access story collapses and the threat model changes for everyone</li>
+<li><strong>The NCSC principle to remember</strong>: the moat is the system, not the model. Invest in orchestration, tooling, and process — not in coupling your practice to one vendor&#39;s API</li>
+</ul></div>
+<div class="sl-block sl-text"><p><strong>Key sources for further reading:</strong></p>
+<p><a href="https://www.aisi.gov.uk/blog/our-evaluation-of-claude-mythos-previews-cyber-capabilities">AISI Independent Evaluation</a> · <a href="https://www.ncsc.gov.uk/blogs/why-cyber-defenders-need-to-be-ready-for-frontier-ai">NCSC Defender Readiness</a> · <a href="https://red.anthropic.com/2026/mythos-preview">Anthropic FRT Assessment</a> · <a href="https://aisle.com/blog/ai-cybersecurity-after-mythos-the-jagged-frontier">AISLE Jagged Frontier</a> · <a href="https://www.microsoft.com/en-us/msrc/blog/2026/04/strengthening-secure-software-global-scale-how-msrc-is-evolving-with-ai">MSRC AI Evolution</a></p></div>
+</article>
+</main>
+<script>(function(){
+"use strict";
+var body=document.body,
+    slides=document.querySelectorAll(".sl-slide"),
+    curSpan=document.querySelector(".sl-current"),
+    toggleBtn=document.querySelector(".sl-mode-toggle"),
+    prevBtn=document.querySelector(".sl-prev"),
+    nextBtn=document.querySelector(".sl-next"),
+    sidebarBtn=document.querySelector(".sl-sidebar-toggle"),
+    thumbs=document.querySelectorAll(".sl-thumb"),
+    total=parseInt(body.getAttribute("data-total-slides")||"0",10)||slides.length,
+    cur=0;
+
+function clamp(n){return Math.max(0,Math.min(n,total-1))}
+
+function go(n){
+  cur=clamp(n);
+  slides.forEach(function(s,i){
+    if(i===cur){s.classList.add("sl-active")}else{s.classList.remove("sl-active")}
+  });
+  thumbs.forEach(function(t,i){
+    if(i===cur){t.classList.add("sl-thumb-active")}else{t.classList.remove("sl-thumb-active")}
+  });
+  if(thumbs[cur]){thumbs[cur].scrollIntoView({block:"nearest"})}
+  if(curSpan){curSpan.textContent=String(cur+1)}
+  if(prevBtn){prevBtn.disabled=cur===0}
+  if(nextBtn){nextBtn.disabled=cur===total-1}
+  history.replaceState(null,"","#slide-"+(cur+1));
+}
+
+function next(){go(cur+1)}
+function prev(){go(cur-1)}
+
+function onKey(e){
+  if(body.getAttribute("data-mode")!=="slides")return;
+  switch(e.key){
+    case"ArrowRight":case"ArrowDown":case"PageDown":case" ":next();e.preventDefault();break;
+    case"ArrowLeft":case"ArrowUp":case"PageUp":case"Backspace":prev();e.preventDefault();break;
+    case"Home":go(0);e.preventDefault();break;
+    case"End":go(total-1);e.preventDefault();break;
+  }
+}
+
+function setMode(m){
+  body.setAttribute("data-mode",m);
+  if(toggleBtn){toggleBtn.textContent=m==="slides"?"Scroll Mode":"Slide Mode"}
+  if(m==="slides"){go(cur)}
+  else{slides.forEach(function(s){s.classList.add("sl-active")})}
+}
+
+function toggleMode(){
+  setMode(body.getAttribute("data-mode")==="slides"?"scroll":"slides");
+}
+
+function toggleSidebar(){
+  var v=body.getAttribute("data-sidebar")==="visible"?"hidden":"visible";
+  body.setAttribute("data-sidebar",v);
+}
+
+function copyCode(btn){
+  var pre=btn.closest("pre")||btn.parentElement;
+  var code=pre?pre.querySelector("code"):null;
+  var text=code?code.textContent||"":"";
+  var orig=btn.textContent;
+  function done(){btn.textContent="Copied!";setTimeout(function(){btn.textContent=orig},1500)}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done,done);
+  }else{
+    var ta=document.createElement("textarea");
+    ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy")}catch(e){}
+    document.body.removeChild(ta);done();
+  }
+}
+
+document.addEventListener("keydown",onKey);
+if(toggleBtn){toggleBtn.addEventListener("click",toggleMode)}
+if(prevBtn){prevBtn.addEventListener("click",prev)}
+if(nextBtn){nextBtn.addEventListener("click",next)}
+if(sidebarBtn){sidebarBtn.addEventListener("click",toggleSidebar)}
+
+thumbs.forEach(function(t){
+  t.addEventListener("click",function(){
+    var idx=parseInt(t.getAttribute("data-thumb-index")||"0",10);
+    if(body.getAttribute("data-mode")!=="slides"){setMode("slides")}
+    go(idx);
+  });
+});
+
+document.addEventListener("click",function(e){
+  var btn=e.target.closest?e.target.closest(".sl-copy-btn"):null;
+  if(btn){copyCode(btn)}
+});
+
+var hash=location.hash.match(/^#slide-(\d+)$/);
+var start=hash?parseInt(hash[1],10)-1:0;
+var mode=body.getAttribute("data-mode")||"slides";
+setMode(mode);
+if(mode==="slides"){go(start)}
+})();</script>
+
+</body>
+</html>
